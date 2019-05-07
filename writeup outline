@@ -1,0 +1,11 @@
+Outline
+- Pre-processing
+	- Dealing with categorical data
+- Restricted Boltzman Machine
+ 	- Why we chose this over other models
+ 		- Robust to small changes in the data
+ 		- Stochastic nature helps it not overfit
+ 		- Useful in scarce data
+ 		- probabilistic so works well with n-grams
+- Natural Language Processing/Generation
+	- n-grams
