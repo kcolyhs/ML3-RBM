@@ -15,6 +15,10 @@ class Encoder:
 
     def __init__(self, cutoff):
         self.cutoff = cutoff
+        self.m = 0
+        self.index_to_ans = []
+        self.ans_to_index = []
+        self.ans_widths = []
 
     def load_csv(self, path='ML3AllSites.csv', encoding="ISO-8859-1"):
         with open(path, 'r', encoding=encoding) as csvfile:
@@ -98,6 +102,23 @@ class Encoder:
                 mapped_index += self.ans_widths[j]
         return existence, pruned_data
 
+    def decode(self, data):
+        answers = []
+        for row in data:
+            reconstructed_ans = []
+            for k in range(len(self.ans_widths)):
+                start_index = np.sum(self.ans_widths[:k])
+                end_index = start_index+self.ans_widths[k]
+                if start_index == end_index:
+                    reconstructed_ans.append("NA")
+                else:
+                    ans_oh = row[start_index:end_index]
+                    ans_index = np.argmax(ans_oh)
+                    reconstructed_ans.append(
+                        self.index_to_ans[start_index+ans_index])
+            answers.append(reconstructed_ans)
+        return np.array(answers)
+
     def kth_pruned_feature(self, data, k):
         start_index = np.sum(self.ans_widths[:k])
         end_index = start_index + self.ans_widths[k]
@@ -109,4 +130,3 @@ if __name__ == "__main__":
     ENCODER.load_csv()
     ENCODER.save()
     ENCODER = Encoder.load()
-
