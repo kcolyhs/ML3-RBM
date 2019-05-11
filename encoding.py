@@ -119,6 +119,19 @@ class Encoder:
             answers.append(reconstructed_ans)
         return np.array(answers)
 
+    # q_i = index of the question
+    # vector = one-hot vector to unmap
+    def unmap(self,q_i, vector):
+        ans_i = np.argmax(vector)
+        if ans_i == (vector.shape[0]-1):
+            return 'NA'
+        else:
+            start_i = np.sum(self.ans_widths[:q_i])
+            return self.index_to_ans[start_i+ans_i]
+
+    def unmap_vectors(self, vectors):
+    res = [self.unmap(i,vectors) for i,vector in enumerate(vectors)]
+
     def kth_pruned_feature(self, data, k):
         start_index = np.sum(self.ans_widths[:k])
         end_index = start_index + self.ans_widths[k]
@@ -126,7 +139,13 @@ class Encoder:
 
 
 if __name__ == "__main__":
+    '''
     ENCODER = Encoder(3)
     ENCODER.load_csv()
     ENCODER.save()
+    '''
     ENCODER = Encoder.load()
+    print(ENCODER.ans_widths[:3])
+    VEC = np.zeros(201)
+    VEC[122] = 1
+    print(ENCODER.unmap(0, VEC))
